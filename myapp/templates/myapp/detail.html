@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ person.name }} — Portfolio</title>
+    <style>
+        /* Detail page styles - simplified and commented for readability */
+        :root {
+            --accent: #222;
+            --muted: #888;
+            --bg: #f9f9f9;
+            --card: #fff;
+            --border: #e5e7eb;
+        }
+        body {
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+            background: var(--bg);
+            margin: 0;
+            padding: 2rem;
+            color: #222;
+        }
+        .wrap {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--card);
+            padding: 2rem 1.5rem;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            box-shadow: none;
+        }
+        .back {
+            display: inline-block;
+            color: var(--muted);
+            text-decoration: none;
+            margin-bottom: 1rem;
+            font-size: .97rem;
+        }
+        .profile {
+            display: flex;
+            gap: 1.1rem;
+            align-items: flex-start;
+        }
+        .avatar {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #eee;
+            color: #222;
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .meta {
+            color: var(--muted);
+            margin-bottom: .5rem;
+            font-size: .93rem;
+        }
+        .bio {
+            color: #444;
+            line-height: 1.6;
+            font-size: .98rem;
+        }
+        .links {
+            margin-top: 1rem;
+        }
+        .btn {
+            display: inline-block;
+            padding: .32rem .6rem;
+            border-radius: 6px;
+            font-size: .92rem;
+            text-decoration: none;
+            border: 1px solid var(--border);
+            background: #fafafa;
+            color: #222;
+            transition: background .15s;
+        }
+        .btn:hover {
+            background: #f0f0f0;
+        }
+        .btn-primary {
+            background: #222;
+            color: #fff;
+            border: none;
+        }
+        @media (max-width: 560px) {
+            .profile { flex-direction: column; align-items: center; text-align: center; }
+            .avatar { width: 48px; height: 48px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <a class="back" href="{% url 'myapp:index' %}">← Back to portfolio</a>
+        <section class="profile">
+            <div class="avatar">{{ person.name|slice:":1"|upper }}</div>
+            <div>
+                <h1 style="margin:.1rem 0">{{ person.name }}</h1>
+                <div class="meta">{{ person.title }}{% if person.email %} · <a href="mailto:{{ person.email }}">{{ person.email }}</a>{% endif %}</div>
+
+                <div class="bio">
+                    <h2 style="margin:.8rem 0 .3rem 0; font-size:1rem">Bio</h2>
+                    <p>{{ person.bio }}</p>
+                </div>
+
+                {% if person.about %}
+                    <div class="bio">
+                        <h2 style="margin:.8rem 0 .3rem 0; font-size:1rem">About Me</h2>
+                        <p>{{ person.about|linebreaks }}</p>
+                    </div>
+                {% endif %}
+
+                <div class="links">
+                    {% if person.website %}
+                        <a class="btn btn-primary" href="{{ person.website }}" target="_blank">Visit Website</a>
+                    {% endif %}
+                    <a class="btn btn-ghost" href="mailto:{% if person.email %}{{ person.email }}{% else %}info@example.com{% endif %}">Email</a>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

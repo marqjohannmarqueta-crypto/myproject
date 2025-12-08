@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Portfolio</title>
+    <style>
+        /* ==========================
+           Basic variables & reset
+           ========================== */
+        :root {
+            --accent: #222;
+            --muted: #888;
+            --bg: #f9f9f9;
+            --card-bg: #fff;
+            --border: #e5e7eb;
+        }
+
+        /* Make box sizing predictable */
+        *, *::before, *::after { box-sizing: border-box; }
+
+        /* Page body */
+        body {
+            font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+            background: var(--bg);
+            margin: 0;
+            padding: 2rem;
+            color: #222;
+        }
+
+        /* Page container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 2rem 1.5rem;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+            box-shadow: none;
+        }
+
+        /* Header */
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.3rem;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+        }
+        .hero-title {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+        .hero-sub {
+            color: var(--muted);
+            margin-top: .25rem;
+            font-size: .98rem;
+        }
+
+        /* Cards layout - 1 column on small screens, 2 on larger */
+        .cards {
+            display: grid;
+            gap: 1.2rem;
+            margin-top: 1rem;
+        }
+        @media (min-width: 700px) {
+            .cards { grid-template-columns: 1fr 1fr; }
+        }
+
+        /* Individual profile card */
+        .profile-card {
+            display: flex;
+            gap: 1.1rem;
+            align-items: flex-start;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.1rem 1rem;
+            box-shadow: none;
+        }
+
+        /* Left column: avatar/initials */
+        .card-left {
+            flex: 0 0 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .avatar-lg {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: #eee;
+            color: #222;
+            font-size: 1.3rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Right column: textual content */
+        .card-right { flex: 1; }
+        .name {
+            margin: .1rem 0;
+            font-size: 1.05rem;
+            font-weight: 500;
+        }
+        .meta {
+            color: var(--muted);
+            font-size: .93rem;
+            margin-bottom: .5rem;
+        }
+        .lead {
+            color: #444;
+            margin: .5rem 0;
+            font-size: .98rem;
+        }
+
+        /* Actions & buttons */
+        .card-actions {
+            margin-top: .6rem;
+        }
+        .btn {
+            display: inline-block;
+            padding: .32rem .6rem;
+            border-radius: 6px;
+            font-size: .92rem;
+            text-decoration: none;
+            border: 1px solid var(--border);
+            background: #fafafa;
+            color: #222;
+            transition: background .15s;
+        }
+        .btn:hover {
+            background: #f0f0f0;
+        }
+        .btn-primary {
+            background: #222;
+            color: #fff;
+            border: none;
+        }
+
+        /* About and projects area */
+        .about-me-block {
+            margin-top: .6rem;
+        }
+        .projects {
+            margin-top: 0.9rem;
+            color: #444;
+        }
+        .projects ul {
+            margin: .3rem 0 0 1.1rem;
+        }
+
+        /* Small screens: tighter avatar */
+        @media (max-width: 420px) { .avatar-lg { width: 56px; height: 56px; font-size: 1.2rem; } }
+
+        footer {
+            margin-top: 1.25rem;
+            color: var(--muted);
+            font-size: .92rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Portfolio</h1>
+        </header>
+
+        <section class="hero" id="about-section">
+            <h2 class="hero-title">Meet the team</h2>
+            <p class="hero-sub">Two talented professionals — concise profiles and contact links.</p>
+
+            <div class="cards">
+                {% for person in people %}
+                    <article class="profile-card">
+                        <div class="card-left">
+                            <div class="avatar-lg">{{ person.name|slice:":1"|upper }}</div>
+                        </div>
+                        <div class="card-right">
+                            <h3 class="name"><a href="{% url 'myapp:detail' person.pk %}">{{ person.name }}</a></h3>
+                            <div class="meta">{{ person.title }}{% if person.email %} · <a href="mailto:{{ person.email }}">{{ person.email }}</a>{% endif %}</div>
+                            <p class="lead">{{ person.bio|truncatechars:220 }}</p>
+
+                            <div class="card-actions">
+                                {% if person.website %}
+                                    <a class="btn btn-primary" href="{{ person.website }}" target="_blank">Website</a>
+                                {% endif %}
+                                <a class="btn btn-light" href="{% url 'myapp:detail' person.pk %}">View profile</a>
+                            </div>
+
+                            <div class="about-me-block" aria-label="About me">
+                                <h4 style="margin:.6rem 0 .2rem 0">About Me</h4>
+                                <p class="lead">{{ person.about|truncatechars:300 }}</p>
+                                <p style="margin:.4rem 0 0 0"><a href="{% url 'myapp:detail' person.pk %}">Read more →</a></p>
+                            </div>
+
+                            <div class="projects">
+                                <strong>Projects</strong>
+                                <ul>
+                                    <li>Quiz game- a short and simple fun game to cure boredom.</li>
+                                    <li>Guess the Flag- a simple and fun game that will educate you in all the country flags</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </article>
+                {% empty %}
+                    <p>No people yet.</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        
+    </div>
+
+</body>
+</html>
